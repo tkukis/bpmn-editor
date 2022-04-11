@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>bpmn-js-react-properties-panel</title>
+
+  <link rel="stylesheet" href="vendor/bpmn-js/assets/diagram-js.css" />
+  <link rel="stylesheet" href="vendor/bpmn-js/assets/bpmn-font/css/bpmn-embedded.css" />
+
+  <style>
+    body, html {
+      height: 100%;
+      width: 100%;
+
+      margin: 0;
+
+      display: flex;
+      flex-direction: column;
+
+      font-family: sans-serif;
+    }
+
+    .modeler-parent {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+    }
+
+    #modeler-container {
+      flex: 1;
+    }
+
+    #properties-container {
+      overflow-y: auto;
+      background: #FAFAFA;
+      height: 100%;
+      border-right: #e9e9e9 1px solid;
+      flex-direction: row;
+      background: #ffffff;
+      box-shadow: -8px 2px 22px -7px rgba(0, 0, 0, 0.25);
+    }
+    .app-sidebar {
+      flex-direction: row;
+      display: flex ;
+    }
+    .app-sidebar-resizer {
+      flex-grow: 0;
+      flex-shrink: 0;
+      flex-basis: 6px;
+      justify-self: flex-end;
+      cursor: col-resize;
+      resize: horizontal;
+      width: 2px;
+      height: 100%;
+      min-height: 90vh;
+    }
+
+    .app-sidebar span {
+      flex-grow: 1;
+    }
+    .app-sidebar fieldset {
+      border: none;
+    }
+    .app-sidebar  label.label {
+      display: block;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="modeler-parent">
+    <div id="modeler-container"></div>
+    <div id="properties-container"></div>
+  </div>
+
+  <script type="text/javascript" src="app.js"></script>
+</body>
+</html>
