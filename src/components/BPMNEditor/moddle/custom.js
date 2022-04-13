@@ -1,4 +1,4 @@
-{
+const json = {
   "name": "custom",
   "uri": "http://custom/ns",
   "associations": [],
@@ -23,8 +23,9 @@
       ]
     }
   ],
-  "prefix": "custom", 
+  "prefix": "custom",
   "xml": {
     "tagAlias": "lowerCase"
   }
 }
+export default json;

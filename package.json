@@ -1,38 +1,39 @@
 {
-  "name": "bpmn-js-example-react-properties-panel",
-  "version": "0.0.0",
-  "description": "A custom react properties panel example",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --open --watch"
-  },
-  "author": {
-    "name": "Niklas Kiefer",
-    "url": "https://github.com/pinussilvestrus"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/bpmn-io/bpmn-js-example-react-properties-panel"
-  },
+  "name": "bpmn-editor",
+  "version": "1.0.0",
+  "main": "index.js",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.3.4",
-    "@babel/plugin-transform-react-jsx": "^7.3.0",
-    "babel-loader": "^8.0.5",
-    "copy-webpack-plugin": "^5.0.0",
-    "css-loader": "^2.1.0",
-    "file-loader": "^3.0.1",
-    "raw-loader": "^1.0.0",
-    "style-loader": "^0.23.1",
-    "webpack": "^4.29.5",
-    "webpack-cli": "^3.2.3",
-    "webpack-dev-server": "^3.2.1"
+    "@babel/core": "^7.17.9",
+    "@rollup/plugin-commonjs": "^21.0.3",
+    "@rollup/plugin-node-resolve": "^13.2.0",
+    "@storybook/addon-actions": "^6.4.21",
+    "@storybook/addon-essentials": "^6.4.21",
+    "@storybook/addon-interactions": "^6.4.21",
+    "@storybook/addon-links": "^6.4.21",
+    "@storybook/react": "^6.4.21",
+    "@storybook/testing-library": "^0.0.9",
+    "@types/react": "^16.8.0",
+    "babel-loader": "^8.2.4",
+    "postcss": "^8.4.12",
+    "rollup": "^2.70.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-typescript2": "^0.31.2",
+    "typescript": "^4.6.3"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
   },
   "dependencies": {
-    "bpmn-js": "^3.2.1",
-    "downloadjs": "^1.4.7",
-    "react": "^16.8.3",
-    "react-dom": "^16.8.3",
-    "react-split-pane": "^0.1.92"
+    "bpmn-js": "^9.0.3"
+  },
+  "module": "lib/index.esm.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook",
+    "build": "rollup -c"
   }
 }

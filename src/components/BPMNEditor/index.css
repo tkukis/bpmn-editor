@@ -1,0 +1,9 @@
+.bpmn__editor {
+  height: 100%;
+  width: 100%;
+  display: flex;
+}
+.bpmn__editor .container {
+  flex-grow: 0;
+  height: 100%;
+}
