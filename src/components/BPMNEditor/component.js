@@ -7,6 +7,8 @@ import "bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import Sidebar from "./Sidebar";
 import { is } from 'bpmn-js/lib/util/ModelUtil';
+import { Button, ButtonGroup, Form } from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
 const $propertiesContainer = document.querySelector('#properties-container');
 
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -114,7 +116,7 @@ class ReactEditor extends React.Component {
               }
             </div>
           </Sidebar>
-        </div>  
+        </div>
       </>
     );
   }
@@ -136,14 +138,6 @@ function ElementProperties(props) {
     const modeling = modeler.get('modeling');
 
     modeling.updateLabel(element, name);
-  }
-
-  function updateTopic(topic) {
-    const modeling = modeler.get('modeling');
-
-    modeling.updateProperties(element, {
-      'custom:topic': topic
-    });
   }
 
   function makeMessageEvent() {
@@ -205,66 +199,75 @@ function ElementProperties(props) {
   };
   return (
     <div className="element-properties" key={element.id}>
-      <fieldset>
-        <label className='label'>id</label>
-        <span>
+      <Form>
+        <Form.Group className="mb-3">
+          <Form.Label>Id</Form.Label>
+
           {idInput(element, modeler)}
-        </span>
-      </fieldset>
-      <fieldset>
-        <label className='label'>type</label>
-        <span>{element.type}</span>
-      </fieldset>
+        </Form.Group>
 
 
-      <fieldset>
-        <label className='label'>name</label>
-        <input style={{ width: "100%" }} value={element.businessObject.name || ''} onChange={(event) => {
-          updateName(event.target.value)
-        }} />
-      </fieldset>
-      {extension.types.map(type => {
-        return is(element, extension.name + ":" + type.name) && type.properties.map(p => {
-          return <fieldset key={p.name}>
-            <label className='label'>{extension.name}:{p.name}</label>
-            <input style={{ width: "100%" }} value={element.businessObject.get(`${extension.name}:${p.name}`)} onChange={(e) => {
-              //updateTopic(event.target.value)
-              const modeling = modeler.get("modeling");
-              const ob = {};
-              ob[`${extension.name}:${p.name}`] = e.target.value;
-              modeling.updateProperties(element, ob);
-            }} />
-          </fieldset>
-        }
-        )
-      })}
+        <Form.Group className="mb-3">
+          <Form.Label>Type</Form.Label>
+          <Form.Control value={element.type} placeholder="Type" />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Name</Form.Label>
+          <Form.Control value={element.businessObject.name || ''} placeholder="Name" />
+        </Form.Group>
+        {extension.types.map(type => {
+          return is(element, extension.name + ":" + type.name) && type.properties.map(p => {
+            return <Form.Group>
+              <Form.Label>{p.name}</Form.Label>
+              <Form.Control
+                value={element.businessObject.get(`${extension.name}:${p.name}`)}
+                onChange={(e) => {
+                  const modeling = modeler.get("modeling");
+                  const ob = {};
+                  ob[`${extension.name}:${p.name}`] = e.target.value;
+                  modeling.updateProperties(element, ob);
+                }}
+              />
+            </Form.Group>
+          })
+        })}
+        <Form.Group className="mb-3">
+          <Form.Label>Actions</Form.Label>
+          <div>
+            <ButtonGroup className="btn-group-justified">
+              {
+                is(element, 'bpmn:Task') && !is(element, 'bpmn:ServiceTask') &&
+                <Button variant="primary" onClick={makeServiceTask}>
+                  Make Service Task
+                </Button>
+              }
 
+              {
+                is(element, 'bpmn:Event') && !hasDefinition(element, 'bpmn:MessageEventDefinition') &&
 
-      <fieldset>
-        <label>actions</label>
+                <Button variant="primary" onClick={makeMessageEvent}>
+                  Make Message Event
+                </Button>
+              }
 
-        {
-          is(element, 'bpmn:Task') && !is(element, 'bpmn:ServiceTask') &&
-          <button onClick={makeServiceTask}>Make Service Task</button>
-        }
+              {
+                is(element, 'bpmn:Task') && !isTimeoutConfigured(element) &&
 
-        {
-          is(element, 'bpmn:Event') && !hasDefinition(element, 'bpmn:MessageEventDefinition') &&
-          <button onClick={makeMessageEvent}>Make Message Event</button>
-        }
-
-        {
-          is(element, 'bpmn:Task') && !isTimeoutConfigured(element) &&
-          <button onClick={attachTimeout}>Attach Timeout</button>
-        }
-      </fieldset>
+                <Button variant="primary" onClick={attachTimeout}>
+                  Attach Timeout
+                </Button>
+              }
+            </ButtonGroup>
+          </div>
+        </Form.Group>
+      </Form>
     </div>
   );
 }
 
 
 function idInput(element, modeler) {
-  return <input style={{ width: "100%" }} value={element.businessObject.get("id")} onClick={() => {
+  return <Form.Control style={{ width: "100%" }} placeholder="Enter id" value={element.businessObject.get("id")} onClick={() => {
     const id = prompt("Id", element.businessObject.get("id"));
     const modeling = modeler.get('modeling');
     modeling.updateProperties(element, { id });

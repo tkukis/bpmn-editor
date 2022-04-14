@@ -6,15 +6,20 @@
     max-width: 100%;
     background: #ffffff;
     box-shadow: -8px 2px 22px -7px rgba(0, 0, 0, 0.25);
+    padding: 16px 16px 16px 0px;
+    overflow: auto;
 }
 .bpmn_sidebar .app-sidebar-resizer {
     flex-grow: 0;
       flex-shrink: 0;
-      flex-basis: 6px;
+      flex-basis: 16px;
       justify-self: flex-end;
       cursor: col-resize;
       resize: horizontal;
-      width: 2px;
+      width: 0px;
       height: 100%;
-      min-height: 90vh;
 }
+.bpmn_sidebar .app-sidebar-content{ 
+  width: 100%;
+}
+    
