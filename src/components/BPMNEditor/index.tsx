@@ -35,13 +35,13 @@ export interface Props {
     moddle?: Moddle,
     onDidMount?: (modeler: BpmnModeler) => void;
 }
-const BPMNEditor = () => {
+const BPMNEditor = (props: Props) => {
     let modeler: BpmnModeler;
     useEffect(() => {
         modeler.importXML(diagramXML);
 
     }, []);
-    return <Component onDidMount={
+    return <Component {...props} onDidMount={
         (comp: BpmnModeler) => {
             modeler = comp;
         }

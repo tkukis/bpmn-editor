@@ -16,7 +16,6 @@ function Sidebar(props) {
 
     const resize = React.useCallback(
         (mouseMoveEvent) => {
-            console.log(mouseMoveEvent.clientX);
             if (isResizing) {
                 setSidebarWidth(
                     window.innerWidth - mouseMoveEvent.clientX

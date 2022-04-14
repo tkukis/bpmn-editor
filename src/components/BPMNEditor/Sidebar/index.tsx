@@ -15,12 +15,11 @@ const Sidebar = (props: { children: React.ReactNode, minWidth: number }) => {
 
     const resize = React.useCallback(
         (mouseMoveEvent) => {
-            console.log(mouseMoveEvent.clientX, window.innerWidth);
             if (isResizing) {
                 const width = window.innerWidth - mouseMoveEvent.clientX
 
                 setSidebarWidth(
-                    width //> _minWidth ? width : _minWidth
+                    _minWidth ? width : _minWidth
                 );
             }
         },
