@@ -1,8 +1,10 @@
 import React from "react";
 import { Meta } from "@storybook/react/types-6-0";
 import { Story } from "@storybook/react";
-import Editor, { BPMNEditorProps } from "./index";
-import json from "./moddle/custom"
+import { BPMNEditorProps } from "./interfaces";
+import Editor from ".";
+import json from "./moddle/moddle"
+import xml from "./moddle/sampleBpmn";
 export default {
   title: "Components/Editor",
   component: Editor,
@@ -12,7 +14,13 @@ export default {
 } as Meta;
 
 // Create a master template for mapping args to render the Button component
-const Template: Story<BPMNEditorProps> = (args) => <div style={{ height: "100vh" }}><Editor {...args} /></div>;
+const Template: Story<BPMNEditorProps> = (args) => <div style={{ height: "100vh" }}><Editor {...args} onDidMount={e => {
+  e.importXML(xml);
+}}
+  onChange={e => {
+
+  }}
+/></div>;
 
 // Reuse that template for creating different stories
 export const Primary = Template.bind({});

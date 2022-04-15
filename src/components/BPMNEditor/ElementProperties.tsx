@@ -2,11 +2,11 @@ import React, { useEffect, useRef } from "react";
 //@ts-ignore
 import { is } from 'bpmn-js/lib/util/ModelUtil';
 import { Button, ButtonGroup, Form } from "react-bootstrap";
-import { BpmnModeler, Moddle } from ".";
+import { BpmnModeler, Moddle } from "./interfaces";
 import defaultWidgets, { WidgetProps } from "./widgets";
 
 export function ElementProperties(props: {
-    element: any, modeler: BpmnModeler, extension: Moddle, widgets?: {
+    element: any, modeler: BpmnModeler, extension?: Moddle, widgets?: {
         [name: string]: (props: WidgetProps) => any
     }
 }) {
@@ -99,18 +99,19 @@ export function ElementProperties(props: {
                     <Form.Label>Name</Form.Label>
                     <Form.Control onChange={e => updateName(e.target.value)} value={element.businessObject.name || ''} placeholder="Name" />
                 </Form.Group>
-                {extension.types.map(type => {
-                    return is(element, extension.name + ":" + type.name) && type.properties.map(p => {
+                {extension?.types?.map(type => {
+                    const extensionName = extension?.name;
+                    return extensionName && is(element, extensionName + ":" + type.name) && type.properties.map(p => {
                         const Element = widgetFactory(p.widget, props.widgets);
                         return <Form.Group key={p.name + p.type}>
                             <Form.Label>{p.name}</Form.Label>
                             <Element
-                                value={element.businessObject.get(`${extension.name}:${p.name}`)}
+                                value={element.businessObject.get(`${extensionName}:${p.name}`)}
                                 onChange={(e) => {
                                     const modeling = modeler.get("modeling");
                                     const ob = {};
                                     //@ts-ignore
-                                    ob[`${extension.name}:${p.name}`] = e.target.value;
+                                    ob[`${extensionName}:${p.name}`] = e.target.value;
                                     modeling.updateProperties(element, ob);
                                 }} />
                         </Form.Group>;
@@ -168,6 +169,6 @@ function idInput(element: any, modeler: any) {
 function hasDefinition(event: any, definitionType: any) {
 
     const definitions = event.businessObject.eventDefinitions || [];
-
+    //@ts-ignore
     return definitions.some(d => is(d, definitionType));
 }

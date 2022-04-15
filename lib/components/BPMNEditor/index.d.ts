@@ -1,43 +1,19 @@
 import React from "react";
-import { WidgetProps } from "./widgets";
-export interface Property {
-    name: string;
-    isAttr: boolean;
-    type: string;
-    widget?: string;
+import "./index.css";
+import "bpmn-js/dist/assets/bpmn-js.css";
+import "bpmn-js/dist/assets/diagram-js.css";
+import "bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { BPMNEditorProps } from "./interfaces";
+declare class ReactEditor extends React.Component<BPMNEditorProps, {
+    selectedElements: Array<any>;
+    element: any;
+}> {
+    containerRef: React.RefObject<HTMLDivElement>;
+    modeler: any;
+    constructor(props: Readonly<BPMNEditorProps>);
+    componentDidMount(): void;
+    componentWillUnmount(): void;
+    render(): JSX.Element;
 }
-export interface Type {
-    name: string;
-    extends: string[];
-    properties: Property[];
-}
-export interface Xml {
-    tagAlias: string;
-}
-export interface Moddle {
-    name: string;
-    uri: string;
-    associations: any[];
-    types: Type[];
-    prefix: string;
-    xml: Xml;
-}
-export interface BpmnModeler {
-    importXML: (xml: string) => void;
-    [name: string]: any;
-}
-export interface BPMNEditorProps {
-    widgets?: {
-        [name: string]: (props: WidgetProps) => React.ReactNode;
-    };
-    createTask?: Boolean;
-    createDataStore?: Boolean;
-    createDataObject?: Boolean;
-    moddle?: Moddle;
-    moddleExtensions: {
-        [name: string]: Moddle;
-    };
-    onDidMount?: (modeler: BpmnModeler) => void;
-}
-declare const BPMNEditor: (props: BPMNEditorProps) => JSX.Element;
-export default BPMNEditor;
+export default ReactEditor;

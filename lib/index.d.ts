@@ -1,2 +1,2 @@
-import Button from "./components/Button";
-export { Button };
+import BPMNEditor from "./components/BPMNEditor";
+export { BPMNEditor };
