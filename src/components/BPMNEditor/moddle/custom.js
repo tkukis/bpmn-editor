@@ -12,9 +12,10 @@ const json = {
         {
           "name": "topic",
           "isAttr": true,
-          "type": "String"
+          "type": "String",
+          "widget": "textArea"
         },
-        {
+        { 
           "name": "topic2",
           "isAttr": true,
           "type": "String"

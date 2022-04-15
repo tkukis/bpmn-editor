@@ -1,10 +1,12 @@
 import Component from "./component";
 import React, { useEffect } from "react";
 import diagramXML from "./diagram"
+import { WidgetProps } from "./widgets";
 export interface Property {
     name: string;
     isAttr: boolean;
     type: string;
+    widget?: string
 }
 
 export interface Type {
@@ -26,16 +28,23 @@ export interface Moddle {
     xml: Xml;
 }
 export interface BpmnModeler {
-    importXML: (xml: string) => void
+    importXML: (xml: string) => void,
+    [name: string]: any
 }
-export interface Props {
+export interface BPMNEditorProps {
+    widgets?: {
+        [name: string]: (props: WidgetProps) => React.ReactNode
+    },
     createTask?: Boolean,
     createDataStore?: Boolean,
     createDataObject?: Boolean,
     moddle?: Moddle,
+    moddleExtensions: {
+        [name: string]: Moddle
+    }
     onDidMount?: (modeler: BpmnModeler) => void;
 }
-const BPMNEditor = (props: Props) => {
+const BPMNEditor = (props: BPMNEditorProps) => {
     let modeler: BpmnModeler;
     useEffect(() => {
         modeler.importXML(diagramXML);

@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 
 function Sidebar(props) {
     const sidebarRef = useRef(null);

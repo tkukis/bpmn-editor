@@ -116,14 +116,6 @@ function ElementProperties(props) {
     modeling.updateLabel(element, name);
   }
 
-  function updateTopic(topic) {
-    const modeling = modeler.get('modeling');
-
-    modeling.updateProperties(element, {
-      'custom:topic': topic
-    });
-  }
-
   function makeMessageEvent() {
 
     const bpmnReplace = modeler.get('bpmnReplace');
@@ -134,7 +126,7 @@ function ElementProperties(props) {
     });
   }
 
-  function makeServiceTask(name) {
+  function makeServiceTask() {
     const bpmnReplace = modeler.get('bpmnReplace');
 
     bpmnReplace.replaceElement(element, {

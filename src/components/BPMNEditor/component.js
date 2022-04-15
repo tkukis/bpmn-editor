@@ -7,8 +7,9 @@ import "bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import Sidebar from "./Sidebar";
 import { is } from 'bpmn-js/lib/util/ModelUtil';
-import { Button, ButtonGroup, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ElementProperties } from "./ElementProperties";
 const $propertiesContainer = document.querySelector('#properties-container');
 
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -35,10 +36,12 @@ class ReactEditor extends React.Component {
   componentDidMount() {
     const container = this.containerRef.current;
     const onDidMount = this.props.onDidMount;
+    const moddleExtensions = this.props.moddleExtensions || {};
     const modeler = new BpmnModeler({
       container,
       moddleExtensions: {
-        custom: this.props.moddle
+        custom: this.props.moddle,
+        moddleExtensions
       },
       keyboard: {
         bindTo: document.body
@@ -102,7 +105,7 @@ class ReactEditor extends React.Component {
             <div>
               {
                 selectedElements.length === 1
-                && <ElementProperties extension={extension} modeler={modeler} element={element} />
+                && <ElementProperties extension={extension} widgets={this.props.widgets} modeler={modeler} element={element} />
               }
 
               {
@@ -122,165 +125,6 @@ class ReactEditor extends React.Component {
   }
 }
 
-function ElementProperties(props) {
 
-  let {
-    element,
-    modeler,
-    extension
-  } = props;
-
-  if (element.labelTarget) {
-    element = element.labelTarget;
-  }
-
-  function updateName(name) {
-    const modeling = modeler.get('modeling');
-
-    modeling.updateLabel(element, name);
-  }
-
-  function makeMessageEvent() {
-
-    const bpmnReplace = modeler.get('bpmnReplace');
-
-    bpmnReplace.replaceElement(element, {
-      type: element.businessObject.$type,
-      eventDefinitionType: 'bpmn:MessageEventDefinition'
-    });
-  }
-
-  function makeServiceTask(name) {
-    const bpmnReplace = modeler.get('bpmnReplace');
-
-    bpmnReplace.replaceElement(element, {
-      type: 'bpmn:ServiceTask'
-    });
-  }
-
-  function attachTimeout() {
-    const modeling = modeler.get('modeling');
-    const autoPlace = modeler.get('autoPlace');
-    const selection = modeler.get('selection');
-
-    const attrs = {
-      type: 'bpmn:BoundaryEvent',
-      eventDefinitionType: 'bpmn:TimerEventDefinition'
-    };
-
-    const position = {
-      x: element.x + element.width,
-      y: element.y + element.height
-    };
-
-    const boundaryEvent = modeling.createShape(attrs, position, element, { attach: true });
-
-    const taskShape = append(boundaryEvent, {
-      type: 'bpmn:Task'
-    });
-
-    selection.select(taskShape);
-  }
-
-  function isTimeoutConfigured(element) {
-    const attachers = element.attachers || [];
-
-    return attachers.some(e => hasDefinition(e, 'bpmn:TimerEventDefinition'));
-  }
-
-  function append(element, attrs) {
-
-    const autoPlace = modeler.get('autoPlace');
-    const elementFactory = modeler.get('elementFactory');
-
-    var shape = elementFactory.createShape(attrs);
-
-    return autoPlace.append(element, shape);
-  };
-  return (
-    <div className="element-properties" key={element.id}>
-      <Form>
-        <Form.Group className="mb-3">
-          <Form.Label>Id</Form.Label>
-
-          {idInput(element, modeler)}
-        </Form.Group>
-
-
-        <Form.Group className="mb-3">
-          <Form.Label>Type</Form.Label>
-          <Form.Control value={element.type} placeholder="Type" />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Name</Form.Label>
-          <Form.Control value={element.businessObject.name || ''} placeholder="Name" />
-        </Form.Group>
-        {extension.types.map(type => {
-          return is(element, extension.name + ":" + type.name) && type.properties.map(p => {
-            return <Form.Group>
-              <Form.Label>{p.name}</Form.Label>
-              <Form.Control
-                value={element.businessObject.get(`${extension.name}:${p.name}`)}
-                onChange={(e) => {
-                  const modeling = modeler.get("modeling");
-                  const ob = {};
-                  ob[`${extension.name}:${p.name}`] = e.target.value;
-                  modeling.updateProperties(element, ob);
-                }}
-              />
-            </Form.Group>
-          })
-        })}
-        <Form.Group className="mb-3">
-          <Form.Label>Actions</Form.Label>
-          <div>
-            <ButtonGroup className="btn-group-justified">
-              {
-                is(element, 'bpmn:Task') && !is(element, 'bpmn:ServiceTask') &&
-                <Button variant="primary" onClick={makeServiceTask}>
-                  Make Service Task
-                </Button>
-              }
-
-              {
-                is(element, 'bpmn:Event') && !hasDefinition(element, 'bpmn:MessageEventDefinition') &&
-
-                <Button variant="primary" onClick={makeMessageEvent}>
-                  Make Message Event
-                </Button>
-              }
-
-              {
-                is(element, 'bpmn:Task') && !isTimeoutConfigured(element) &&
-
-                <Button variant="primary" onClick={attachTimeout}>
-                  Attach Timeout
-                </Button>
-              }
-            </ButtonGroup>
-          </div>
-        </Form.Group>
-      </Form>
-    </div>
-  );
-}
-
-
-function idInput(element, modeler) {
-  return <Form.Control style={{ width: "100%" }} placeholder="Enter id" value={element.businessObject.get("id")} onClick={() => {
-    const id = prompt("Id", element.businessObject.get("id"));
-    const modeling = modeler.get('modeling');
-    modeling.updateProperties(element, { id });
-  }} />;
-}
-
-// helpers ///////////////////
-
-function hasDefinition(event, definitionType) {
-
-  const definitions = event.businessObject.eventDefinitions || [];
-
-  return definitions.some(d => is(d, definitionType));
-}
 
 export default ReactEditor;
