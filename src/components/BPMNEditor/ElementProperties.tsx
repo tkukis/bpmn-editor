@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 //@ts-ignore
 import { is } from 'bpmn-js/lib/util/ModelUtil';
 import { Button, ButtonGroup, Form } from "react-bootstrap";
@@ -93,16 +93,16 @@ export function ElementProperties(props: {
 
                 <Form.Group className="mb-3">
                     <Form.Label>Type</Form.Label>
-                    <Form.Control value={element.type} placeholder="Type" />
+                    <Form.Control readOnly value={element.type} placeholder="Type" />
                 </Form.Group>
                 <Form.Group className="mb-3">
                     <Form.Label>Name</Form.Label>
-                    <Form.Control value={element.businessObject.name || ''} placeholder="Name" />
+                    <Form.Control onChange={e => updateName(e.target.value)} value={element.businessObject.name || ''} placeholder="Name" />
                 </Form.Group>
                 {extension.types.map(type => {
                     return is(element, extension.name + ":" + type.name) && type.properties.map(p => {
                         const Element = widgetFactory(p.widget, props.widgets);
-                        return <Form.Group>
+                        return <Form.Group key={p.name + p.type}>
                             <Form.Label>{p.name}</Form.Label>
                             <Element
                                 value={element.businessObject.get(`${extension.name}:${p.name}`)}
@@ -150,11 +150,17 @@ function widgetFactory(name: string = "defaultWidget", widgets: any = {}): (prop
 }
 
 function idInput(element: any, modeler: any) {
-    return <Form.Control style={{ width: "100%" }} placeholder="Enter id" value={element.businessObject.get("id")} onClick={() => {
-        const id = prompt("Id", element.businessObject.get("id"));
-        const modeling = modeler.get('modeling');
-        modeling.updateProperties(element, { id });
-    }} />;
+    const inputEl = useRef(null);
+    useEffect(() => {
+        if (inputEl && inputEl.current) {
+            //@ts-ignore
+            inputEl.current.value = element.businessObject.get("id");
+        }
+    }, [element.businessObject.get("id"), inputEl?.current]);
+    return <Form.Control ref={inputEl} onBlur={e => {
+        modeler.get('modeling').updateProperties(element, { id: (`${e.target.value}`.replaceAll(" ", "_")) });
+    }} />
+
 }
 
 // helpers ///////////////////

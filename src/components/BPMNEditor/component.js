@@ -98,7 +98,6 @@ class ReactEditor extends React.Component {
     const element = this.state.element;
     const extension = this.props.moddle;
     return (
-      <>
         <div className="bpmn__editor">
           <div className="container" ref={this.containerRef} style={{ height: "100%" }}><div style={{ width: "100%" }} /></div>
           <Sidebar >
@@ -119,8 +118,7 @@ class ReactEditor extends React.Component {
               }
             </div>
           </Sidebar>
-        </div>
-      </>
+      </div>
     );
   }
 }
